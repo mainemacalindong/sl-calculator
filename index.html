@@ -10,48 +10,48 @@
       font-family: Arial, sans-serif;
       background: #f5f7fa;
       margin: 0;
-      padding: 20px;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start; /* TOP ALIGN */
+      padding: 10px;
     }
 
     .container {
       background: white;
-      padding: 15px;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-      width: 280px;
+      padding: 10px;
+      border-radius: 6px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      width: 240px; /* smaller width */
     }
 
     h2 {
-      font-size: 16px;
-      margin-bottom: 10px;
-      text-align: center;
+      font-size: 13px;
+      margin: 0 0 8px;
     }
 
     label {
-      font-size: 12px;
+      font-size: 11px;
       color: #555;
     }
 
     input {
       width: 100%;
-      padding: 6px;
-      margin: 4px 0 8px;
+      padding: 5px;
+      margin: 2px 0 6px;
       border-radius: 4px;
       border: 1px solid #ccc;
-      font-size: 12px;
+      font-size: 11px;
     }
 
     .result {
-      margin-top: 6px;
-      padding: 6px;
+      margin-top: 4px;
+      padding: 5px;
       background: #e8f0fe;
       border-radius: 4px;
-      text-align: center;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: bold;
+    }
+
+    .row {
+      display: flex;
+      justify-content: space-between;
     }
   </style>
 </head>
@@ -59,30 +59,33 @@
 <body>
 
 <div class="container">
-  <h2>SL & Lot Calculator</h2>
+  <h2>SL & Lot</h2>
 
-  <label>Account Value</label>
+  <label>Account</label>
   <input type="number" id="accountValue">
 
-  <label>Current Range</label>
+  <label>Current</label>
   <input type="number" id="currentRange">
 
-  <label>7 Day Range</label>
+  <label>7D</label>
   <input type="number" id="range7d">
 
-  <label>30 Day Range</label>
+  <label>30D</label>
   <input type="number" id="range30d">
 
-  <div class="result">
-    SL: <span id="sl">0</span>
+  <div class="result row">
+    <span>SL</span>
+    <span id="sl">0</span>
   </div>
 
-  <div class="result">
-    Divisor: <span id="divisor">0</span>
+  <div class="result row">
+    <span>Div</span>
+    <span id="divisor">0</span>
   </div>
 
-  <div class="result">
-    Lot: <span id="lot">0</span>
+  <div class="result row">
+    <span>Lot</span>
+    <span id="lot">0</span>
   </div>
 </div>
 
@@ -98,22 +101,21 @@
     const range7d = parseFloat(document.getElementById("range7d").value) || 0;
     const range30d = parseFloat(document.getElementById("range30d").value) || 0;
 
-    // === STEP 1: Dynamic SL ===
+    // === SL ===
     let sl = (range7d + range30d) / 2;
 
     // ROUND UP to nearest 1000
     sl = Math.ceil(sl / 1000) * 1000;
 
-    // Minimum SL
     if (sl < 2000) sl = 2000;
 
-    // === STEP 2: Dynamic Divisor ===
+    // === DIVISOR ===
     const baseSL = 2000;
     const baseDivisor = 5000;
 
     const dynamicDivisor = baseDivisor * (sl / baseSL);
 
-    // === STEP 3: Lot ===
+    // === LOT ===
     let lot = 0;
     if (dynamicDivisor > 0) {
       lot = accountValue / dynamicDivisor;
