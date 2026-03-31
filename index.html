@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dynamic SL & Lot Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f7fa;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      background: white;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      width: 320px;
+    }
+    h2 {
+      text-align: center;
+    }
+    input {
+      width: 100%;
+      padding: 8px;
+      margin: 8px 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    .result {
+      margin-top: 10px;
+      padding: 10px;
+      background: #e8f0fe;
+      border-radius: 5px;
+      text-align: center;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>SL & Lot Calculator</h2>
+
+  <label>Account Value</label>
+  <input type="number" id="accountValue" placeholder="Enter value">
+
+  <label>Current Range</label>
+  <input type="number" id="currentRange" placeholder="Enter value">
+
+  <label>7 Day Range</label>
+  <input type="number" id="range7d" placeholder="Enter value">
+
+  <label>30 Day Range</label>
+  <input type="number" id="range30d" placeholder="Enter value">
+
+  <div class="result">
+    Dynamic SL: <span id="sl">0</span>
+  </div>
+
+  <div class="result">
+    Divisor: <span id="divisor">0</span>
+  </div>
+
+  <div class="result">
+    Suggested Lot: <span id="lot">0</span>
+  </div>
+</div>
+
+<script>
+  const inputs = document.querySelectorAll("input");
+
+  inputs.forEach(input => {
+    input.addEventListener("input", calculate);
+  });
+
+  function calculate() {
+    const accountValue = parseFloat(document.getElementById("accountValue").value) || 0;
+    const range7d = parseFloat(document.getElementById("range7d").value) || 0;
+    const range30d = parseFloat(document.getElementById("range30d").value) || 0;
+
+    // === STEP 1: Compute SL ===
+    let sl = (range7d + range30d) / 2;
+
+    // Round DOWN to nearest 1000
+    sl = Math.floor(sl / 1000) * 1000;
+
+    // Minimum SL
+    if (sl < 2000) sl = 2000;
+
+    // === STEP 2: Dynamic Divisor ===
+    const baseSL = 2000;
+    const baseDivisor = 5000;
+
+    const dynamicDivisor = baseDivisor * (sl / baseSL);
+
+    // === STEP 3: Lot Calculation ===
+    let lot = 0;
+    if (dynamicDivisor > 0) {
+      lot = accountValue / dynamicDivisor;
+    }
+
+    // === OUTPUT ===
+    document.getElementById("sl").textContent = sl.toLocaleString();
+    document.getElementById("divisor").textContent = dynamicDivisor.toLocaleString();
+    document.getElementById("lot").textContent = lot.toFixed(2);
+  }
+</script>
+
+</body>
+</html>
